@@ -34,7 +34,12 @@ export const useGameStore = create<GameStore>()((set,get) => {
     return {
         ...initialState,
         placeRobot: (pos, dir)=>{
+            if (pos.x < 1 || pos.y < 1 || pos.x > 5 || pos.y > 5) {
+                return
+            }
+
             set((oldState)=>{
+
                 const newBoard = structuredClone(oldState.board)
                 const oldPos = oldState.robotPosition
                 if (oldPos) {
@@ -50,7 +55,9 @@ export const useGameStore = create<GameStore>()((set,get) => {
             })
         },
         report: () => { return 'TODO' },
-        reset: () => {},
+        reset: () => {
+            set(initialState)
+        },
         getCellContent: (pos) => {
             return get().board[pos.y-1][pos.x-1]
         }

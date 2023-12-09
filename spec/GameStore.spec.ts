@@ -21,25 +21,31 @@ describe('GameStore', ()=>{
 
     describe('placeRobot(...)', ()=>{
         it('places the robot at specified coords', ()=>{
-            // Given
-            // When
             store().placeRobot({x: 3, y: 3}, 'NORTH')
             
-            // Then
             expect(store().getCellContent({x:3, y:3})).equal('ROBOT')
             expect(store().robotPosition).eql({x:3, y:3})
         })
 
         it('move the robot if already on the board', ()=>{
-            // GIVEN
             store().placeRobot({x: 3, y: 3}, 'EAST')
 
-            // WHEN
             store().placeRobot({x: 5, y: 5}, 'EAST')
             
-            // THEN
             expect(store().getCellContent({x:5, y:5})).equal('ROBOT')
             expect(store().getCellContent({x:3, y:3})).toBeUndefined()
+        })
+
+        
+        it('does nothing if not valid coords', ()=>{
+            store().placeRobot({x: 0, y: -1}, 'EAST')
+            store().placeRobot({x: -5, y: 0}, 'EAST')
+            store().placeRobot({x: 0, y: 0}, 'EAST')
+
+            const thereIsARobot = 
+                store().board.flat().some(cell => cell == 'ROBOT')
+
+            expect(thereIsARobot).toBeFalsy()
         })
     })
 
