@@ -1,18 +1,16 @@
-import { beforeEach, describe, expect, it } from "vitest";
-import { GameStore, useGameStore } from "../src/stores/GameStore";
+import { beforeEach, describe, expect, it } from 'vitest'
+import { GameStore, useGameStore } from '../src/stores/GameStore'
 
 describe('GameStore', ()=>{
     let gameStore: GameStore
 
     beforeEach(()=>{
         gameStore = useGameStore.getState()
-        gameStore.reset();
-        console.log(gameStore);
-        
+        gameStore.reset()
     })
 
     describe('getCellContent', ()=>{
-        it('return the cell content at one-based index specified coord', ()=>{
+        it('returns the cell content at one-based index specified coord', ()=>{
             const testBoard = structuredClone(gameStore.board)
             testBoard[2][2] = 'WALL'
             useGameStore.setState({board: testBoard})

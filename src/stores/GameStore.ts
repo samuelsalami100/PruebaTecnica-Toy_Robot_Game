@@ -1,5 +1,4 @@
-import { create } from "zustand"
-
+import { create } from 'zustand'
 
 type Position = {x: number, y: number}
 type CellContent = 'ROBOT'|'WALL'
@@ -43,7 +42,7 @@ export const useGameStore = create<GameStore>()((set,get) => {
                 }
             })
         },
-        report: () => { return "TODO" },
+        report: () => { return 'TODO' },
         reset: () => {},
         getCellContent: (pos) => {
             return get().board[pos.y-1][pos.x-1]
