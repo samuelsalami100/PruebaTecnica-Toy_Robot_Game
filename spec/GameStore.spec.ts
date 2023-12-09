@@ -36,7 +36,6 @@ describe('GameStore', ()=>{
             expect(store().getCellContent({x:3, y:3})).toBeUndefined()
         })
 
-        
         it('does nothing if not valid coords', ()=>{
             store().placeRobot({x: 0, y: -1}, 'EAST')
             store().placeRobot({x: -5, y: 0}, 'EAST')
@@ -49,4 +48,11 @@ describe('GameStore', ()=>{
         })
     })
 
+    describe('placeWall(...)', ()=>{
+        it('places the wall at specified coords (empty cell)', ()=>{
+            store().placeWall({x:3, y:3})
+            
+            expect(store().getCellContent({x:3, y:3})).equal('WALL')
+        })
+    })
 })

@@ -1,7 +1,7 @@
 import { create } from 'zustand'
 
 type Position = {x: number, y: number}
-type CellContent = 'ROBOT'|'WALL'
+type CellContent = 'ROBOT' | 'WALL'
 type Direction = 'NORTH' | 'EAST' | 'SOUTH' | 'WEST'
 
 interface GameState {
@@ -20,9 +20,10 @@ interface GameOperations {
     report: () => string
     placeRobot: (pos: Position, dir: Direction) => void
     reset: () => void
-    getCellContent: (pos: Position)=> CellContent|undefined/*
+    getCellContent: (pos: Position)=> CellContent|undefined
     
     placeWall: (pos: Position) => void
+    /*
     move: () => void
     left: () => void
     right: () => void*/
@@ -30,16 +31,17 @@ interface GameOperations {
 
 export type GameStore = GameState & GameOperations
 
+const isValidCoord = ({x,y}: Position)=>{
+    return x >= 1 && y >= 1 && x <= 5 && y <= 5
+}
+
 export const useGameStore = create<GameStore>()((set,get) => {
     return {
         ...initialState,
         placeRobot: (pos, dir)=>{
-            if (pos.x < 1 || pos.y < 1 || pos.x > 5 || pos.y > 5) {
-                return
-            }
+            if (!isValidCoord(pos)) { return }
 
             set((oldState)=>{
-
                 const newBoard = structuredClone(oldState.board)
                 const oldPos = oldState.robotPosition
                 if (oldPos) {
@@ -60,6 +62,18 @@ export const useGameStore = create<GameStore>()((set,get) => {
         },
         getCellContent: (pos) => {
             return get().board[pos.y-1][pos.x-1]
+        },
+        placeWall: (pos) => {
+            if (!isValidCoord(pos)) { return }
+
+            set((oldState)=>{
+                const newBoard = structuredClone(oldState.board)
+                newBoard[pos.y-1][pos.x-1] = 'WALL'
+                
+                return {
+                    board: newBoard
+                }
+            })
         }
     }
 })
