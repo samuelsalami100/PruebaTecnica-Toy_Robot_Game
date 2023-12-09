@@ -6,19 +6,19 @@ type Direction = 'NORTH' | 'EAST' | 'SOUTH' | 'WEST'
 
 interface GameState {
     robotPosition: Position | undefined,
-    robotDirection: Direction
+    robotDirection: Direction | undefined,
     board: (CellContent|undefined)[][]
 }
 
 const initialState: GameState = {
     robotPosition: undefined,
-    robotDirection: 'NORTH',
+    robotDirection: undefined,
     board: Array.from(new Array(5), ()=>new Array(5))
 }
 
 interface GameOperations {
     report: () => string
-    placeRobot: (pos: Position) => void
+    placeRobot: (pos: Position, dir: Direction) => void
     reset: () => void
     getCellContent: (pos: Position)=> CellContent|undefined/*
     
@@ -33,12 +33,19 @@ export type GameStore = GameState & GameOperations
 export const useGameStore = create<GameStore>()((set,get) => {
     return {
         ...initialState,
-        placeRobot: (pos)=>{ 
+        placeRobot: (pos, dir)=>{
             set((oldState)=>{
                 const newBoard = structuredClone(oldState.board)
+                const oldPos = oldState.robotPosition
+                if (oldPos) {
+                    newBoard[oldPos.y-1][oldPos.x-1] = undefined
+                }
+
                 newBoard[pos.y-1][pos.x-1] = 'ROBOT'
                 return {
-                    board: newBoard
+                    board: newBoard,
+                    robotPosition: pos,
+                    robotDirection: dir
                 }
             })
         },

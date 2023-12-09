@@ -1,28 +1,45 @@
 import { beforeEach, describe, expect, it } from 'vitest'
-import { GameStore, useGameStore } from '../src/stores/GameStore'
+import { useGameStore } from '../src/stores/GameStore'
 
 describe('GameStore', ()=>{
-    let gameStore: GameStore
+    
+    const store = () => useGameStore.getState()
 
     beforeEach(()=>{
-        gameStore = useGameStore.getState()
-        gameStore.reset()
+        store().reset()
     })
 
     describe('getCellContent', ()=>{
         it('returns the cell content at one-based index specified coord', ()=>{
-            const testBoard = structuredClone(gameStore.board)
+            const testBoard = structuredClone(store().board)
             testBoard[2][2] = 'WALL'
             useGameStore.setState({board: testBoard})
 
-            expect(gameStore.getCellContent({x:3, y:3})).equal('WALL')
+            expect(store().getCellContent({x:3, y:3})).equal('WALL')
         })
     })
 
     describe('placeRobot(...)', ()=>{
         it('places the robot at specified coords', ()=>{
-            gameStore.placeRobot({x: 3, y: 3})
-            expect(gameStore.getCellContent({x:3, y:3})).equal('ROBOT')
+            // Given
+            // When
+            store().placeRobot({x: 3, y: 3}, 'NORTH')
+            
+            // Then
+            expect(store().getCellContent({x:3, y:3})).equal('ROBOT')
+            expect(store().robotPosition).eql({x:3, y:3})
+        })
+
+        it('move the robot if already on the board', ()=>{
+            // GIVEN
+            store().placeRobot({x: 3, y: 3}, 'EAST')
+
+            // WHEN
+            store().placeRobot({x: 5, y: 5}, 'EAST')
+            
+            // THEN
+            expect(store().getCellContent({x:5, y:5})).equal('ROBOT')
+            expect(store().getCellContent({x:3, y:3})).toBeUndefined()
         })
     })
 
