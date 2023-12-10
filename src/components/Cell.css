@@ -1,5 +1,60 @@
+:root {
+    --color-border-placing: var(--color-second);
+    --color-border-placing--hover: var(--color-third-light);
+}
+
 .cell {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
     width: 4rem;
     height: 4rem;
+    font-size: 2rem;
+    user-select: none;
+
     background: var(--color-bg-2);
+}
+
+.cell--placing {
+    border: 0.3rem solid var(--color-border-placing);
+}
+
+.cell--placing:hover {
+    border: 0.3rem solid var(--color-border-placing--hover);
+    animation: 0.25s linear alternate infinite animateBorder;
+    background-color: var(--color-bg-3);
+}
+
+.cell--placing:hover::after {
+    content: '🤖';
+    opacity: 0.25;
+}
+.cell--placing.cell--wall:hover::after {
+    content: '🧱';
+}
+
+
+.cell--north,
+.cell--placing.cell--north {
+    transform: rotateZ(180deg);
+}
+.cell--east,
+.cell--placing.cell--east {
+    transform: rotateZ(-90deg);
+}
+.cell--west,
+.cell--placing.cell--west {
+    transform: rotateZ(90deg);
+}
+
+@keyframes animateBorder {
+    0% { border-width: 0.2rem; }
+    100% { border-width: 0.4rem; }
+}
+
+@media (prefers-reduced-motion) {
+    .cell--placing {
+        animation: none !important;
+    }
 }

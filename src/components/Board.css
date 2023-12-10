@@ -5,3 +5,12 @@
     grid-template-columns: repeat(var(--board-cols, 5), 1fr);
     gap: 0.2rem;
 }
+
+.controls {
+    min-height: 2.5rem;
+    margin-top: 0.5rem;
+}
+
+.controls > * {
+    margin-left: 0.5rem;
+}

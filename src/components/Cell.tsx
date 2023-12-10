@@ -1,7 +1,7 @@
 import './Cell.css'
 import { useMemo } from 'react'
 import { useGameStore } from '../stores/GameStore'
-import { Position } from '../types'
+import { Direction, Position } from '../types'
 
 /**
  * Using a fully store based approach for components. In other words, using only 
@@ -10,8 +10,11 @@ import { Position } from '../types'
  * knowledge of centralized state management, but maybe I wouldn't (ab)use a 
  * store in real life.
  */
-type CellProps = {
+export type CellProps = {
     position: Position
+    placing?: Direction | 'WALL'
+    onRobotPlace: (position: Position, direction: Direction) => void
+    onWallPlace: (position: Position) => void
 }
 
 const CELL_EMOJIS = {
@@ -20,21 +23,36 @@ const CELL_EMOJIS = {
 }
 
 export default function Cell(props: CellProps) {
+    function pointerHandler() {
+        if (!props.placing || content) { return }
+
+        if (props.placing == 'WALL') {
+            return props.onWallPlace(props.position)
+        }
+        props.onRobotPlace(props.position, props.placing)
+    }
+
     const store = useGameStore()
     const content = store.getCellContent(props.position)
-    
-    // updates only when content change
-    const [cellEmoji, cellClassModifier] = useMemo(()=>{
-        if (!content) { return ['', ''] }
+
+    const [cellEmoji, contentModifiers] = useMemo(()=>{
+        if (!content) { return ['', 'cell--empty'] }
 
         let modifiers = `cell--${content.toLowerCase()}`
-        if (content == 'ROBOT') {
+        if (content == 'ROBOT') {   // Direction modifier if robot
             modifiers += ` cell--${store.robotDirection!.toLowerCase()}`
         }
 
         return  [ CELL_EMOJIS[content],  modifiers ]
     }, [content, store.robotDirection])
-    
 
-    return <div className={`cell ${cellClassModifier}`}>{cellEmoji}</div>
+    let placingModifier = ''
+    if (props.placing && !content) {
+        placingModifier = `cell--placing cell--${props.placing.toLowerCase()}`
+    }
+
+    return <div className={`cell ${contentModifiers} ${placingModifier}`}
+        onPointerDown={pointerHandler}>
+        {cellEmoji}
+    </div>
 }

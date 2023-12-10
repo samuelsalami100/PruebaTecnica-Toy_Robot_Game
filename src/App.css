@@ -9,15 +9,15 @@
   --color-primary-darker:   hsl(264, 30%, 12%);
   --color-primary-darkest:  hsl(264, 25%, 04%);
 
-  --color-second-lightest: hsl(120, 85%, 92%);
-  --color-second-lighter:  hsl(120, 71%, 77%);
-  --color-second-light:    hsl(120, 63%, 66%);
-  --color-second-lighty:   hsl(120, 45%, 51%);
-  --color-second:          hsl(120, 45%, 37%);
-  --color-second-darky:    hsl(120, 43%, 29%);
-  --color-second-dark:     hsl(120, 35%, 17%);
-  --color-second-darker:   hsl(120, 30%, 12%);
-  --color-second-darkest:  hsl(120, 25%, 04%);
+  --color-second-lightest: hsl(200, 85%, 92%);
+  --color-second-lighter:  hsl(200, 71%, 77%);
+  --color-second-light:    hsl(200, 63%, 66%);
+  --color-second-lighty:   hsl(200, 45%, 51%);
+  --color-second:          hsl(200, 45%, 37%);
+  --color-second-darky:    hsl(200, 43%, 29%);
+  --color-second-dark:     hsl(200, 35%, 17%);
+  --color-second-darker:   hsl(200, 30%, 12%);
+  --color-second-darkest:  hsl(200, 25%, 04%);
 
   --color-third-lightest: hsl(60, 85%, 92%);
   --color-third-lighter:  hsl(60, 71%, 77%);
@@ -33,22 +33,43 @@
 :root {
   --color-bg: var(--color-primary-darkest);
   --color-bg-2: var(--color-primary-dark);
+  --color-bg-3: var(--color-primary-darky);
+
   --color-font: var(--color-primary-lightest);
+  --color-borders: var(--color-primary-darker);
+  --color-borders-2: var(--color-primary-dark);
+
+  --color-second-borders: var(--color-second-darky);
+  --color-second-borders-2: var(--color-second);
 }
+
+
 
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  color: var(--color-font);
 }
 
 body {
   font-family: Arial, Helvetica, sans-serif;
-  color: var(--color-font);
   background: var(--color-bg);
 
   min-height: 100svh;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
+}
+
+button {
+  padding: 0.5rem;
+  background-color: var(--color-bg-2);
+  border: var(--color-borders) solid 0.2rem;
+}
+
+button:hover {
+  background-color: var(--color-bg-3);
+  border-color: var(--color-borders-2);
 }
