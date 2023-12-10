@@ -1,8 +1,5 @@
 import { create } from 'zustand'
-
-type Position = {x: number, y: number}
-type CellContent = 'ROBOT' | 'WALL'
-type Direction = 'NORTH' | 'EAST' | 'SOUTH' | 'WEST'
+import { Position, Direction, CellContent } from '../types'
 
 
 interface GameState {
