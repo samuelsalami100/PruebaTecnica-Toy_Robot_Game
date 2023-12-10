@@ -4,6 +4,7 @@
 import './Board.css' // NOTE: using BEM methodology/convention
 
 import { useGameStore } from '../stores/GameStore'
+import Cell from './Cell'
 
 export default function Board() {
     const gameStore = useGameStore()
@@ -14,7 +15,7 @@ export default function Board() {
     const cells: JSX.Element[] = []
     for(let row = height; row > 0; row--) {
         for(let col = 1; col <= width; col++) {
-            cells.push(<div key={`${col}-${row}`} className="cell" />)
+            cells.push(<Cell key={`${col}-${row}`} position={{x:col, y:row}} />)
         }
     }
 

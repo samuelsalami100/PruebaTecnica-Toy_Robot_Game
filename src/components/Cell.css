@@ -1,0 +1,5 @@
+.cell {
+    width: 4rem;
+    height: 4rem;
+    background: var(--color-bg-2);
+}

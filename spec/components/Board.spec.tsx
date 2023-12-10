@@ -31,7 +31,7 @@ describe('Board component (Board.tsx)', ()=>{
 
 
     describe('Component creation and initialization', ()=>{
-        it.only('renders as many cells as the cell matrix size', async ()=>{
+        it('renders as many cells as the cell matrix size', async ()=>{
             const comp = cleanAndRender()
 
             // Here is where BEM shines to me. By its nature of stable semantic 
