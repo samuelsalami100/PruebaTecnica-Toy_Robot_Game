@@ -4,6 +4,7 @@ type Position = {x: number, y: number}
 type CellContent = 'ROBOT' | 'WALL'
 type Direction = 'NORTH' | 'EAST' | 'SOUTH' | 'WEST'
 
+
 interface GameState {
     robotPosition: Position | undefined,
     robotDirection: Direction | undefined,
@@ -24,9 +25,14 @@ interface GameOperations {
     
     placeWall: (pos: Position) => void
     move: () => void
-    /*left: () => void
-    right: () => void*/
+    rotate90: (toThe: 'RIGHT' | 'LEFT') => void
+
+    /** alias of rotate90('LEFT') */
+    left: () => void
+    /** alias of rotate90('RIGHT') */
+    right: () => void
 }
+ 
 
 const DIR_VECTORS: Readonly<{[key in Direction]: Readonly<Position>}> = {
     'NORTH': {x: 0, y: 1},
@@ -80,6 +86,15 @@ export const useGameStore = create<GameStore>()((set,get) => {
         getCellContent: (pos) => {
             return get().board[pos.y-1][pos.x-1]
         },
+
+        // ignore rule until implementation
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        rotate90(toThe: 'RIGHT' | 'LEFT') {
+            // TODO:
+        },
+        right() { get().rotate90('RIGHT') },
+        left() { get().rotate90('LEFT') },
+
         placeWall: (pos) => {
             if ( !isValidCoord(pos) ) { return }
             

@@ -14,9 +14,12 @@ const store = () => useGameStore.getState()
  */
 function expectNoBoardChangesWhenDo(actions: ()=>void) {
     const originalBoard = structuredClone(store().board)
+    const originalPosition = structuredClone(store().robotPosition)
+    const originalDirection = store().robotDirection
     actions()
-    const afterBoard = store().board
-    expect(afterBoard).eql(originalBoard)
+    expect(store().board).eql(originalBoard)
+    expect(store().robotPosition).eql(originalPosition)
+    expect(store().robotDirection).eql(originalDirection)
 }
 
 describe('GameStore', ()=>{
@@ -85,7 +88,7 @@ describe('GameStore', ()=>{
         })
     })
 
-    describe('report', ()=>{
+    describe('report()', ()=>{
         // I consider printing to be a view-specific behavior or implementation 
         // detail that should not occur during state management.
         it('return (not print) robot current location and direction', ()=>{
@@ -100,7 +103,7 @@ describe('GameStore', ()=>{
     })
 
     
-    describe('move', ()=>{
+    describe('move()', ()=>{
         it('does nothing if there are no robot', ()=>{
             expectNoBoardChangesWhenDo(()=>store().move())
         })
@@ -138,6 +141,38 @@ describe('GameStore', ()=>{
             store().move()
             expect(store().robotPosition).eql({x:3, y:2})
             expect(store().getCellContent({x:3, y:2})).equal('ROBOT')
+        })
+    })
+
+    describe('left() and right()', ()=>{
+        it('Does nothing if no robot', ()=>{
+            expectNoBoardChangesWhenDo(()=>store().right())
+            expectNoBoardChangesWhenDo(()=>store().left())
+        })
+
+        it('Change direction clockwise with right', ()=>{
+            store().placeRobot({x:2, y:2}, 'NORTH')
+            store().right()
+            expect(store().robotDirection).equal('EAST')
+            store().right()
+            expect(store().robotDirection).equal('SOUTH')
+            store().right()
+            expect(store().robotDirection).equal('WEST')
+            store().right()
+            expect(store().robotDirection).equal('NORTH')
+        })
+
+        
+        it('Change direction anticlockwise with left', ()=>{
+            store().placeRobot({x:2, y:2}, 'NORTH')
+            store().left()
+            expect(store().robotDirection).equal('WEST')
+            store().left()
+            expect(store().robotDirection).equal('SOUTH')
+            store().left()
+            expect(store().robotDirection).equal('EAST')
+            store().left()
+            expect(store().robotDirection).equal('NORTH')
         })
     })
 })
