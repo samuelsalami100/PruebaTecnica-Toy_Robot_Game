@@ -114,7 +114,7 @@ describe('GameStore', ()=>{
             expectNoBoardChangesWhenDo(()=>store().move())
         })
 
-        it('move the robot forward in the facing direction', ()=>{
+        it('moves the robot forward in the facing direction', ()=>{
             store().placeRobot({x:2, y:2}, 'EAST')
             store().move()
 
@@ -141,6 +141,45 @@ describe('GameStore', ()=>{
             store().move()
             expect(store().robotPosition).eql({x:3, y:2})
             expect(store().getCellContent({x:3, y:2})).equal('ROBOT')
+        })
+
+        it('moves the robot and warping at edges', ()=>{
+            store().placeRobot({x:2, y:5}, 'NORTH')
+            store().move()
+            expect(store().robotPosition).eql({x:2, y:1})
+
+
+            store().placeRobot({x:5, y:2}, 'EAST')
+            store().move()
+            expect(store().robotPosition).eql({x:1, y:2})
+            
+            
+            store().placeRobot({x:2, y:1}, 'SOUTH')
+            store().move()
+            expect(store().robotPosition).eql({x:2, y:5})
+
+            store().placeRobot({x:1, y:2}, 'WEST')
+            store().move()
+            expect(store().robotPosition).eql({x:5, y:2})
+        })
+
+        
+        it('moves the robot and warping at edges only if possible', ()=>{
+            store().placeWall({x:3, y:1})
+            store().placeRobot({x:3, y:5}, 'NORTH')
+            expectNoBoardChangesWhenDo(()=>store().move())
+
+            store().placeWall({x:1, y:2})
+            store().placeRobot({x:5, y:2}, 'EAST')
+            expectNoBoardChangesWhenDo(()=>store().move())
+
+            store().placeWall({x:2, y:5})
+            store().placeRobot({x:2, y:1}, 'SOUTH')
+            expectNoBoardChangesWhenDo(()=>store().move())
+
+            store().placeWall({x:5, y:3})
+            store().placeRobot({x:1, y:3}, 'WEST')
+            expectNoBoardChangesWhenDo(()=>store().move())
         })
     })
 

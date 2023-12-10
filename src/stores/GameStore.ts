@@ -126,10 +126,21 @@ export const useGameStore = create<GameStore>()((set,get) => {
             if (!state.robotPosition) { return }
             
             const dirVector = DIR_VECTORS[state.robotDirection!]
-            state.placeRobot({
+            const targetPosition = {
                 x: state.robotPosition.x + dirVector.x,
                 y: state.robotPosition.y + dirVector.y
-            }, this.robotDirection!)
+            }
+
+            // warps
+            if (targetPosition.x > 5) { targetPosition.x = 1 }
+            else if (targetPosition.x < 1) { targetPosition.x = 5 }
+
+            if (targetPosition.y > 5) { targetPosition.y = 1 }
+            else if (targetPosition.y < 1) { targetPosition.y = 5 }
+
+            state.placeRobot(targetPosition, this.robotDirection!)
+
+            
         }
     }
 })
