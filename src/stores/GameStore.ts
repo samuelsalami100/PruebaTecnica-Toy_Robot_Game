@@ -28,6 +28,13 @@ interface GameOperations {
     right: () => void*/
 }
 
+const DIR_VECTORS: Readonly<{[key in Direction]: Readonly<Position>}> = {
+    'NORTH': {x: 0, y: 1},
+    'EAST': {x: 1, y: 0},
+    'SOUTH': {x: 0, y: -1},
+    'WEST': {x: -1, y: 0}
+}
+
 export type GameStore = GameState & GameOperations
 
 const isValidCoord = ({x,y}: Position)=>{
@@ -39,6 +46,9 @@ export const useGameStore = create<GameStore>()((set,get) => {
         ...initialState,
         placeRobot: (pos, dir)=>{
             if (!isValidCoord(pos)) { return }
+
+            const state = get()
+            if (state.getCellContent(pos)) { return }
 
             set((oldState)=>{
                 const newBoard = structuredClone(oldState.board)
@@ -85,7 +95,14 @@ export const useGameStore = create<GameStore>()((set,get) => {
             })
         },
         move() {
-            // TODO:
+            const state = get()
+            if (!state.robotPosition) { return }
+            
+            const dirVector = DIR_VECTORS[state.robotDirection!]
+            state.placeRobot({
+                x: state.robotPosition.x + dirVector.x,
+                y: state.robotPosition.y + dirVector.y
+            }, this.robotDirection!)
         }
     }
 })

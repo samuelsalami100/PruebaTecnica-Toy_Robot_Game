@@ -55,6 +55,13 @@ describe('GameStore', ()=>{
                 store().placeRobot({x: 0, y: 0}, 'EAST')
             })
         })
+
+        it('does nothing if not empty cell', ()=>{
+            store().placeWall({x: 3, y: 3})
+            expectNoBoardChangesWhenDo(()=>{
+                store().placeRobot({x: 3, y: 3}, 'EAST')
+            })
+        })
     })
 
     describe('placeWall(...)', ()=>{
@@ -105,7 +112,7 @@ describe('GameStore', ()=>{
         })
 
         it('move the robot forward in the facing direction', ()=>{
-            store().placeRobot({x:2, y: 2}, 'EAST')
+            store().placeRobot({x:2, y:2}, 'EAST')
             store().move()
 
             expect(store().getCellContent({x:2, y:2})).toBeUndefined()
