@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it } from 'vitest'
 import { useGameStore } from '../src/stores/GameStore'
 
 describe('GameStore', ()=>{
-    
+
     const store = () => useGameStore.getState()
 
     beforeEach(()=>{
@@ -11,10 +11,7 @@ describe('GameStore', ()=>{
 
     describe('getCellContent', ()=>{
         it('returns the cell content at one-based index specified coord', ()=>{
-            const testBoard = structuredClone(store().board)
-            testBoard[2][2] = 'WALL'
-            useGameStore.setState({board: testBoard})
-
+            expect(store().placeWall({x:3, y:3}))
             expect(store().getCellContent({x:3, y:3})).equal('WALL')
         })
     })
@@ -51,8 +48,23 @@ describe('GameStore', ()=>{
     describe('placeWall(...)', ()=>{
         it('places the wall at specified coords (empty cell)', ()=>{
             store().placeWall({x:3, y:3})
-            
             expect(store().getCellContent({x:3, y:3})).equal('WALL')
+        })
+
+        it('does nothing if not valid coords', ()=>{
+            store().placeWall({x:3, y:3})
+            expect(store().board.flat().every(c => c != 'WALL')).toBeTruthy()
+        })
+
+        it('does nothing if cell is not empty', ()=>{
+            store().placeRobot({x:3, y:3}, 'EAST')
+
+            store().placeWall({x:3, y:3})
+
+            // Cell still has the robot
+            expect(store().getCellContent({x:3, y:3})).equal('ROBOT')
+            // no wall has been placed anywhere
+            expect(store().board.flat().every(c => c != 'WALL')).toBeTruthy()
         })
     })
 })
