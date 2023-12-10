@@ -1,0 +1,39 @@
+.history {
+    min-width: 20rem;
+    background: var(--color-bg-2);
+    height: 80svh;
+    max-height: 480px;
+    margin-right: 2rem;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    border: 0.2rem solid var(--color-borders-2);
+}
+.history__title {
+    padding: 0.5rem;
+    text-align: center;
+    box-shadow: 0 0.1rem 0.4rem black;
+}
+.history__list {
+    padding: 1rem;
+    max-height: 480px;
+    overflow-y: auto;
+    padding-bottom: 3rem;
+}
+
+.history__message {
+    font-family: monospace;
+    font-weight: bold;
+    margin-top: 0.2rem;
+    font-size: 1.2rem;
+}
+
+.history__message::before {
+    content: '> ';
+}
+
+.history__message--result {
+    margin-left: 1rem;
+    font-size: 1.1rem;
+    color: var(--color-second-light);
+}

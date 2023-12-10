@@ -1,20 +1,32 @@
 import { create } from 'zustand'
-import { Position, Direction, CellContent } from '../types'
+import { Position, Direction, CellContent, Commands } from '../types'
+import { parseCommand } from '@/lib/CommandParser'
 
-
+type HistoryEntry = {
+    name: keyof Commands, 
+    params: Commands[keyof Commands],
+    result?: string
+}
 interface GameState {
     robotPosition: Position | undefined,
     robotDirection: Direction | undefined,
-    board: (CellContent|undefined)[][]
+    board: (CellContent|undefined)[][],
+    history: HistoryEntry[]
 }
 
 const initialState: GameState = {
     robotPosition: undefined,
     robotDirection: undefined,
-    board: Array.from(new Array(5), ()=>new Array(5))
+    board: Array.from(new Array(5), ()=>new Array(5)),
+    history: []
 }
 
+
+
 interface GameOperations {
+    command: <T extends keyof Commands>(command: T, params?: Commands[T]) => void
+    commandString: (commandString: string) => void,
+    
     report: () => string | undefined
     placeRobot: (pos: Position, dir: Direction) => void
     reset: () => void
@@ -47,8 +59,50 @@ const isValidCoord = ({x,y}: Position)=>{
 }
 
 export const useGameStore = create<GameStore>()((set,get) => {
+    // command layer
+    const behaviors: {[C in keyof Commands]: (params?: Commands[C]) => void} = {
+        PLACE_ROBOT: (params) => {
+            const {position, direction} = params!
+            get().placeRobot(position, direction)
+        },
+        PLACE_WALL: (params)=>{ 
+            get().placeWall(params!.position) 
+        },
+        REPORT: ()=>{ get().report() },
+        RIGHT: ()=>{ get().right()},
+        MOVE: ()=>{ get().move() },
+        LEFT: ()=>{ get().left() }
+    }
+
+    function command<T extends keyof Commands>(
+        command: T, params?: Commands[T]) {
+        const current = get()
+        try { 
+            behaviors[command](params) 
+        } catch (e) { 
+            console.log('Ignored not valid command: ' + command)
+            return
+        }
+        const histEntry: HistoryEntry = {name: command, params}
+        
+        if (command == 'REPORT' && current.robotPosition) {
+            const {x,y} = current.robotPosition
+            histEntry.result = `${x},${y},${current.robotDirection}`
+        }
+
+        set({ history: [
+            ...current.history, 
+            histEntry
+        ]})
+    }
+
     return {
         ...initialState,
+        command,
+        commandString: (commandString: string) => {
+            const {name, params} = parseCommand(commandString)
+            command(name, params)
+        },
         placeRobot: (pos, dir)=>{
             if (!isValidCoord(pos)) { return }
 
@@ -136,8 +190,6 @@ export const useGameStore = create<GameStore>()((set,get) => {
             else if (targetPosition.y < 1) { targetPosition.y = 5 }
 
             state.placeRobot(targetPosition, this.robotDirection!)
-
-            
         }
     }
 })

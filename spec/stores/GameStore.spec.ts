@@ -102,7 +102,6 @@ describe('GameStore', ()=>{
         })
     })
 
-    
     describe('move()', ()=>{
         it('does nothing if there are no robot', ()=>{
             expectNoBoardChangesWhenDo(()=>store().move())

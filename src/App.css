@@ -52,10 +52,9 @@
   color: var(--color-font);
 }
 
-body {
+body, main {
   font-family: Arial, Helvetica, sans-serif;
   background: var(--color-bg);
-
   min-height: 100svh;
   display: flex;
   flex-direction: column;
@@ -63,13 +62,37 @@ body {
   align-items: center;
 }
 
-button {
+
+
+button, input {
   padding: 0.5rem;
   background-color: var(--color-bg-2);
   border: var(--color-borders) solid 0.2rem;
 }
 
+input {
+  background-color: var(--color-bg-2);
+  outline: none;
+}
+
+input:focus,
+input:active {
+  background: var(--color-bg);
+}
+
 button:hover {
   background-color: var(--color-bg-3);
   border-color: var(--color-borders-2);
+}
+
+.main-header {
+  position: absolute;
+  left: 1rem;
+  top: 1rem;
+  z-index: 1;
+}
+#root {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
 }

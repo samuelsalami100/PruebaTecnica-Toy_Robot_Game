@@ -24,11 +24,11 @@ export default function Board() {
                 position={{ x: col, y: row }}
                 placing={placing}
                 onRobotPlace={(pos, dir) => {
-                    gameStore.placeRobot(pos, dir)
+                    gameStore.commandString(`PLACE_ROBOT ${pos.x},${pos.y},${dir}`)
                     setPlacing(undefined)
                 }}
-                onWallPlace={(pos)=>{
-                    gameStore.placeWall(pos)
+                onWallPlace={(pos) => {
+                    gameStore.commandString(`PLACE_WALL ${pos.x},${pos.y}`)
                     setPlacing(undefined)
                 }}
             />)
@@ -40,50 +40,52 @@ export default function Board() {
     return <>
         <section className="board">
             <div className="board__cells"
-                style={{       
+                style={{
                     '--board-rows': height,
                     '--board-cols': width
                 } as React.CSSProperties  //     ¯\_(ツ)_/¯
-                }>{cells}</div>
-        </section>
-        <section className="controls place-controls">
-            {!placing &&
-            <>
-                <button className="controls place-controls__wall"
-                    onClick={() => setPlacing('WALL')}>🧱 Place wall</button>
-                <button className="controls place-controls__robot"
-                    onClick={() => setPlacing('SOUTH')}>🤖 Place robot</button>
-            </>}
+                }>{cells}
+            </div>
+            <section className="controls place-controls">
+                {!placing &&
+                    <>
+                        <button className="controls place-controls__wall"
+                            onClick={() => setPlacing('WALL')}>🧱 Place wall</button>
+                        <button className="controls place-controls__robot"
+                            onClick={() => setPlacing('SOUTH')}>🤖 Place robot</button>
+                    </>}
 
-            {placing &&
-            <>
-                <button className="controls place-controls__cancel"
-                    onClick={() => setPlacing(undefined)}>❌ Cancel</button>
+                {placing &&
+                    <>
+                        <button className="controls place-controls__cancel"
+                            onClick={() => setPlacing(undefined)}>❌ Cancel</button>
 
-                {placing != 'WALL' && 
-                <ButtonSelect
-                    options={[
-                        { value: 'NORTH' }, { value: 'EAST' },
-                        { value: 'SOUTH' }, { value: 'WEST' },
-                    ]}
-                    defaultSelected='SOUTH'
-                    onInput={(op) => setPlacing(op.value as Direction)} 
-                />}
-            </>
-            }
+                        {placing != 'WALL' &&
+                            <ButtonSelect
+                                options={[
+                                    { value: 'NORTH' }, { value: 'EAST' },
+                                    { value: 'SOUTH' }, { value: 'WEST' },
+                                ]}
+                                defaultSelected='SOUTH'
+                                onInput={(op) => setPlacing(op.value as Direction)}
+                            />}
+                    </>
+                }
+            </section>
+
+            <section className="controls move-controls">
+                {!placing &&
+                    <>
+                        <button className="move-controls__left"
+                            onClick={() => gameStore.command('LEFT')}>Turn left</button>
+                        <button className="move-controls__forward"
+                            onClick={() => gameStore.commandString('MOVE')}>👣 Forward</button>
+                        <button className="move-controls__right"
+                            onClick={() => gameStore.commandString('RIGHT')}>Turn right</button>
+                    </>}
+            </section>
         </section>
 
-        <section className="controls move-controls">
-            {!placing &&
-            <>
-                <button className="move-controls__left"
-                    onClick={() => gameStore.left()}>Turn left</button>
-                <button className="move-controls__forward"
-                    onClick={() => gameStore.move()}>👣 Forward</button>
-                <button className="move-controls__right"
-                    onClick={() => gameStore.right()}>Turn right</button>
-            </>}
-        </section>
     </>
 }
 
