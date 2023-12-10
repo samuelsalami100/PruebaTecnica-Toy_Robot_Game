@@ -1,7 +1,7 @@
 import './History.css'
 import { encodeCommand } from '@/lib/CommandParser'
 import { useGameStore } from '@/stores/GameStore'
-import React, { useRef } from 'react'
+import { useRef } from 'react'
 import CommandInput from './CommandInput'
 
 export default function History() {
