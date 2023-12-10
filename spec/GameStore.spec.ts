@@ -52,7 +52,9 @@ describe('GameStore', ()=>{
         })
 
         it('does nothing if not valid coords', ()=>{
-            store().placeWall({x:3, y:3})
+            store().placeWall({x:-3, y:3})
+            store().placeWall({x:0, y:0})
+            store().placeWall({x:0, y:20})
             expect(store().board.flat().every(c => c != 'WALL')).toBeTruthy()
         })
 

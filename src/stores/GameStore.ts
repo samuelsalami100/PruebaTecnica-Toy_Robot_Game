@@ -64,8 +64,10 @@ export const useGameStore = create<GameStore>()((set,get) => {
             return get().board[pos.y-1][pos.x-1]
         },
         placeWall: (pos) => {
-            if (!isValidCoord(pos)) { return }
-
+            if ( !isValidCoord(pos) ) { return }
+            
+            if (get().getCellContent(pos)) { return }
+            
             set((oldState)=>{
                 const newBoard = structuredClone(oldState.board)
                 newBoard[pos.y-1][pos.x-1] = 'WALL'
