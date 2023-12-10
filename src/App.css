@@ -1,5 +1,54 @@
+:root {
+  --color-primary-lightest: hsl(264, 85%, 92%);
+  --color-primary-lighter:  hsl(264, 71%, 77%);
+  --color-primary-light:    hsl(264, 63%, 66%);
+  --color-primary-lighty:   hsl(264, 45%, 51%);
+  --color-primary:          hsl(264, 45%, 37%);
+  --color-primary-darky:    hsl(264, 43%, 27%);
+  --color-primary-dark:     hsl(264, 35%, 17%);
+  --color-primary-darker:   hsl(264, 30%, 12%);
+  --color-primary-darkest:  hsl(264, 25%, 04%);
+
+  --color-second-lightest: hsl(120, 85%, 92%);
+  --color-second-lighter:  hsl(120, 71%, 77%);
+  --color-second-light:    hsl(120, 63%, 66%);
+  --color-second-lighty:   hsl(120, 45%, 51%);
+  --color-second:          hsl(120, 45%, 37%);
+  --color-second-darky:    hsl(120, 43%, 29%);
+  --color-second-dark:     hsl(120, 35%, 17%);
+  --color-second-darker:   hsl(120, 30%, 12%);
+  --color-second-darkest:  hsl(120, 25%, 04%);
+
+  --color-third-lightest: hsl(60, 85%, 92%);
+  --color-third-lighter:  hsl(60, 71%, 77%);
+  --color-third-light:    hsl(60, 63%, 66%);
+  --color-third-lighty:   hsl(60, 45%, 51%);
+  --color-third:          hsl(60, 45%, 37%);
+  --color-third-darky:    hsl(60, 43%, 29%);
+  --color-third-dark:     hsl(60, 35%, 17%);
+  --color-third-darker:   hsl(60, 30%, 12%);
+  --color-third-darkest:  hsl(60, 25%, 04%);
+}
+
+:root {
+  --color-bg: var(--color-primary-darkest);
+  --color-bg-2: var(--color-primary-dark);
+  --color-font: var(--color-primary-lightest);
+}
+
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  color: var(--color-font);
+  background: var(--color-bg);
+
+  min-height: 100svh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
