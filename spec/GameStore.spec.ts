@@ -1,10 +1,25 @@
 import { beforeEach, describe, expect, it } from 'vitest'
 import { useGameStore } from '../src/stores/GameStore'
 
+/**
+ * Gets guaranteed up-to-date status from the store. I recommend always doing it
+ * this way during testing to avoid any type of unexpected "hook" behavior.
+ * Implications of the not-so-agnostic Zustand library.
+ */
+const store = () => useGameStore.getState()
+
+/**
+ * Utility to check for any changes. Avoiding excesive boilerplating with all
+ * those methods that "does nothing if ...""
+ */
+function expectNoBoardChangesWhenDo(actions: ()=>void) {
+    const originalBoard = structuredClone(store().board)
+    actions()
+    const afterBoard = store().board
+    expect(afterBoard).eql(originalBoard)
+}
+
 describe('GameStore', ()=>{
-
-    const store = () => useGameStore.getState()
-
     beforeEach(()=>{
         store().reset()
     })
@@ -34,14 +49,11 @@ describe('GameStore', ()=>{
         })
 
         it('does nothing if not valid coords', ()=>{
-            store().placeRobot({x: 0, y: -1}, 'EAST')
-            store().placeRobot({x: -5, y: 0}, 'EAST')
-            store().placeRobot({x: 0, y: 0}, 'EAST')
-
-            const thereIsARobot = 
-                store().board.flat().some(cell => cell == 'ROBOT')
-
-            expect(thereIsARobot).toBeFalsy()
+            expectNoBoardChangesWhenDo(()=>{
+                store().placeRobot({x: 0, y: -1}, 'EAST')
+                store().placeRobot({x: -5, y: 0}, 'EAST')
+                store().placeRobot({x: 0, y: 0}, 'EAST')
+            })
         })
     })
 
@@ -52,21 +64,17 @@ describe('GameStore', ()=>{
         })
 
         it('does nothing if not valid coords', ()=>{
-            store().placeWall({x:-3, y:3})
-            store().placeWall({x:0, y:0})
-            store().placeWall({x:0, y:20})
-            expect(store().board.flat().every(c => c != 'WALL')).toBeTruthy()
+            expectNoBoardChangesWhenDo(()=>{
+                store().placeWall({x:-3, y:3})
+                store().placeWall({x:0, y:0})
+                store().placeWall({x:0, y:20})
+            })
         })
 
         it('does nothing if cell is not empty', ()=>{
             store().placeRobot({x:3, y:3}, 'EAST')
 
-            store().placeWall({x:3, y:3})
-
-            // Cell still has the robot
-            expect(store().getCellContent({x:3, y:3})).equal('ROBOT')
-            // no wall has been placed anywhere
-            expect(store().board.flat().every(c => c != 'WALL')).toBeTruthy()
+            expectNoBoardChangesWhenDo(()=>store().placeWall({x:3, y:3}))
         })
     })
 
@@ -81,6 +89,48 @@ describe('GameStore', ()=>{
 
             store().placeRobot({x:5, y:3}, 'WEST')
             expect(store().report()).equal('5,3,WEST')
+        })
+    })
+
+    
+    describe('move', ()=>{
+        it('does nothing if there are no robot', ()=>{
+            expectNoBoardChangesWhenDo(()=>store().move())
+        })
+
+        it('does nothing if there is a wall in front of the robot', ()=>{
+            store().placeRobot({x: 2, y: 2}, 'EAST')
+            store().placeWall({x: 3, y: 2})
+            expectNoBoardChangesWhenDo(()=>store().move())
+        })
+
+        it('move the robot forward in the facing direction', ()=>{
+            store().placeRobot({x:2, y: 2}, 'EAST')
+            store().move()
+
+            expect(store().getCellContent({x:2, y:2})).toBeUndefined()
+            expect(store().robotPosition).eql({x:3, y:2})
+            expect(store().getCellContent({x:3, y:2})).equal('ROBOT')
+
+            store().move()
+            expect(store().getCellContent({x:3, y:2})).toBeUndefined()
+            expect(store().robotPosition).eql({x:4, y:2})
+            expect(store().getCellContent({x:4, y:2})).equal('ROBOT')
+
+            store().robotDirection = 'WEST'
+            store().move()
+            expect(store().robotPosition).eql({x:3, y:2})
+            expect(store().getCellContent({x:3, y:2})).equal('ROBOT')
+
+            store().robotDirection = 'NORTH'
+            store().move()
+            expect(store().robotPosition).eql({x:3, y: 3})
+            expect(store().getCellContent({x:3, y:3})).equal('ROBOT')
+
+            store().robotDirection = 'SOUTH'
+            store().move()
+            expect(store().robotPosition).eql({x:3, y:2})
+            expect(store().getCellContent({x:3, y:2})).equal('ROBOT')
         })
     })
 })

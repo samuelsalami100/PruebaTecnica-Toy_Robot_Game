@@ -23,9 +23,8 @@ interface GameOperations {
     getCellContent: (pos: Position)=> CellContent|undefined
     
     placeWall: (pos: Position) => void
-    /*
     move: () => void
-    left: () => void
+    /*left: () => void
     right: () => void*/
 }
 
@@ -84,6 +83,9 @@ export const useGameStore = create<GameStore>()((set,get) => {
                     board: newBoard
                 }
             })
+        },
+        move() {
+            // TODO:
         }
     }
 })
