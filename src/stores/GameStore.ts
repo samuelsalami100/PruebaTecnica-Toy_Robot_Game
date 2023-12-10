@@ -33,6 +33,8 @@ interface GameOperations {
     right: () => void
 }
  
+/** Clockwise ordered directions */
+const DIRECTIONS: Readonly<Direction[]> = ['NORTH', 'EAST', 'SOUTH', 'WEST']
 
 const DIR_VECTORS: Readonly<{[key in Direction]: Readonly<Position>}> = {
     'NORTH': {x: 0, y: 1},
@@ -90,7 +92,17 @@ export const useGameStore = create<GameStore>()((set,get) => {
         // ignore rule until implementation
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         rotate90(toThe: 'RIGHT' | 'LEFT') {
-            // TODO:
+            const state = get()
+            if (!state.robotDirection) { return }
+
+            let directionIndex = DIRECTIONS.indexOf(state.robotDirection)
+            directionIndex += (toThe == 'RIGHT' ? 1 : -1)
+            if (directionIndex == -1) { directionIndex = 3 }
+            else { directionIndex = directionIndex % 4}
+
+            set({
+                robotDirection: DIRECTIONS[directionIndex]
+            })
         },
         right() { get().rotate90('RIGHT') },
         left() { get().rotate90('LEFT') },
