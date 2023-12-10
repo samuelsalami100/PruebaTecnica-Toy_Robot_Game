@@ -17,7 +17,7 @@ const initialState: GameState = {
 }
 
 interface GameOperations {
-    report: () => string
+    report: () => string | undefined
     placeRobot: (pos: Position, dir: Direction) => void
     reset: () => void
     getCellContent: (pos: Position)=> CellContent|undefined
@@ -56,10 +56,18 @@ export const useGameStore = create<GameStore>()((set,get) => {
                 }
             })
         },
-        report: () => { return 'TODO' },
+        report: () => { 
+            const state = get()
+            const pos = state.robotPosition
+            if (!pos) { return }
+
+            return `${pos.x},${pos.y},${state.robotDirection}`
+        },
+
         reset: () => {
             set(initialState)
         },
+
         getCellContent: (pos) => {
             return get().board[pos.y-1][pos.x-1]
         },
