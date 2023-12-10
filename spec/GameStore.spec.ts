@@ -69,4 +69,18 @@ describe('GameStore', ()=>{
             expect(store().board.flat().every(c => c != 'WALL')).toBeTruthy()
         })
     })
+
+    describe('report', ()=>{
+        // I consider printing to be a view-specific behavior or implementation 
+        // detail that should not occur during state management.
+        it('return (not print) robot current location and direction', ()=>{
+            expect(store().report()).toBeUndefined()
+
+            store().placeRobot({x:3, y:2}, 'EAST')
+            expect(store().report()).equal('3,2,EAST')
+
+            store().placeRobot({x:5, y:3}, 'WEST')
+            expect(store().report()).equal('5,3,WEST')
+        })
+    })
 })
